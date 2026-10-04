@@ -1,0 +1,28 @@
+version: 1
+
+server:
+  listen:
+    dns:
+      - "127.0.0.1:5354"
+  upstreams:
+    - system
+  timeout: 2s
+  cache_ttl: 30s
+  cache_size: 4096
+
+zones:
+  - name: project.internal
+    default_ttl: 30s
+    records:
+      - name: api
+        type: A
+        values:
+          - 127.0.0.1
+      - name: "*.api"
+        type: CNAME
+        values:
+          - api.project.internal.
+      - name: _http._tcp
+        type: SRV
+        values:
+          - "0 0 8080 api.project.internal."
